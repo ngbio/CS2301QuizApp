@@ -1,4 +1,4 @@
-package com.ntt.quizapp;
+package com.ndnt.quizapp;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +17,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"));
+        scene = new Scene(loadFXML("question"));
         stage.setScene(scene);
+        stage.setTitle("Quiz App");
         stage.show();
     }
 

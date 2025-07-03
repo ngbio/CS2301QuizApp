@@ -1,4 +1,4 @@
-package com.ntt.quizapp;
+package com.ndnt.quizapp;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
