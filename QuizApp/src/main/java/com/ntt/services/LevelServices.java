@@ -7,6 +7,7 @@ package com.ntt.services;
 import com.ntt.pojo.Level;
 import com.ntt.utils.JdbcConnector;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,16 +18,15 @@ import java.util.List;
  *
  * @author NGUYEN THUAN
  */
-public class LevelServices {
-    
-    public List<Level> getLevels() throws SQLException {
-        // Mo ket noi
-        Connection conn = JdbcConnector.getInstance().connect();
+public class LevelServices extends BaseServices<Level> {
 
-        // Truy van
-        Statement stm = conn.createStatement(); // Thuc thi truy van
-        ResultSet rs = stm.executeQuery("SELECT * FROM level");
+    @Override
+    public PreparedStatement getStm(Connection conn) throws SQLException {
+        return conn.prepareCall("SELECT * FROM level");
+    }
 
+    @Override
+    public List<Level> getResults(ResultSet rs) throws SQLException {
         List<Level> levels = new ArrayList<>();
         while (rs.next()) {
             int id = rs.getInt("id");

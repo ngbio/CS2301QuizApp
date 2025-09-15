@@ -32,8 +32,8 @@ public class PrimaryController implements Initializable {
         this.cbThemes.getSelectionModel().getSelectedItem().updateTheme(this.cbThemes.getScene());
     }
     
-    public void handlePratice(ActionEvent event) {
-        MyAlert.getInstance().showMsg("Coming soon...");
+    public void handlePratice(ActionEvent event) throws IOException {
+        MyStage.getInstance().showStage("practice.fxml");
     }
 
     public void handleTest(ActionEvent event) {

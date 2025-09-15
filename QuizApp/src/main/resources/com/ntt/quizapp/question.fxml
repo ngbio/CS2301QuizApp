@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0" prefWidth="600.0" styleClass="Main" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ntt.quizapp.QuestionController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="557.0" prefWidth="604.0" styleClass="Main" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ntt.quizapp.QuestionController">
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Subject" text="QUẢN LÝ CÂU HỎI" />
       <TextArea fx:id="txtContent" prefHeight="60.0" prefWidth="600.0" promptText="Nội dung câu hỏi" />
@@ -42,7 +42,13 @@
       </VBox>
       <Button mnemonicParsing="false" onAction="#addChoice" styleClass="Button" stylesheets="@style.css" text="Thêm lựa chọn" />
       <Button mnemonicParsing="false" onAction="#adddQuestion" style="-fx-background-color: red;" styleClass="Button" text="Thêm câu hỏi" />
-      <TextField fx:id="txtSearch" promptText="Tìm kiếm câu hỏi..." />
-      <TableView fx:id="tbQuestions" prefHeight="200.0" prefWidth="200.0" />
+      <HBox styleClass="Main">
+         <children>
+            <TextField fx:id="txtSearch" promptText="Tìm kiếm câu hỏi..." />
+            <ComboBox fx:id="cbSearchCates" prefWidth="150.0" />
+            <ComboBox fx:id="cbSearchLevels" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <TableView fx:id="tbQuestions" prefHeight="204.0" prefWidth="604.0" />
    </children>
 </VBox>

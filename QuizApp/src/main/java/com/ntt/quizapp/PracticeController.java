@@ -4,16 +4,25 @@
  */
 package com.ntt.quizapp;
 
+import com.ntt.pojo.Category;
+import com.ntt.pojo.Level;
 import com.ntt.pojo.Question;
+import com.ntt.services.questions.BaseQuestionServices;
+import com.ntt.services.questions.CategoryQuestionServicesDecorator;
+import com.ntt.services.questions.LevelQuestionServicesDecorator;
+import com.ntt.services.questions.LimitedQuestionServicesDecorator;
 import com.ntt.utils.Configs;
+import com.ntt.utils.FlyweightFactory;
 import com.ntt.utils.MyAlert;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -21,69 +30,97 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 /**
- * FXML Controller class
+ * FXML Controller classA
  *
  * @author NGUYEN THUAN
  */
 public class PracticeController implements Initializable {
-    @FXML private TextField  txtNum;
-    @FXML Text txtContent;
-    @FXML Text txtResult;
-    @FXML VBox vboxChoices;
-    
+
+    @FXML
+    private TextField txtNum;
+    @FXML
+    Text txtContent;
+    @FXML
+    Text txtResult;
+    @FXML
+    VBox vboxChoices;
+    @FXML
+    private ComboBox<Category> cbSearchCates;
+    @FXML
+    private ComboBox<Level> cbSearchLevels;
+
     private List<Question> questions;
     private int currentQuestion;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
-    public void handleStart(ActionEvent event) throws SQLException{
-        try{
+        try {
+
+            this.cbSearchCates.setItems(FXCollections.observableList(FlyweightFactory.getData(Configs.cateServices, "categories")));
+            this.cbSearchLevels.setItems(FXCollections.observableList(FlyweightFactory.getData(Configs.levelServices, "levels")));
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public void handleStart(ActionEvent event) throws SQLException {
+        try {
             int num = Integer.parseInt(this.txtNum.getText());
             
-            questions = Configs.questionServices.getQuestions(num);
+            BaseQuestionServices s = Configs.questionServices;
             
+            Category c = this.cbSearchCates.getSelectionModel().getSelectedItem();
+            if(c != null)
+                s = new CategoryQuestionServicesDecorator(s, c.getId());
+            
+            Level l = this.cbSearchLevels.getSelectionModel().getSelectedItem();
+            if(l != null)
+                s = new LevelQuestionServicesDecorator(s, l.getId());
+            
+            s = new LimitedQuestionServicesDecorator(s, num);
+            questions = s.list();
+
             this.currentQuestion = 0;
             this.loadQuestion();
-        }catch(NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             MyAlert.getInstance().showMsg("Vui lòng nhập số câu hỏi hợp lệ!");
         }
     }
-    
-    private void loadQuestion(){
+
+    private void loadQuestion() {
         Question q = this.questions.get(this.currentQuestion);
         this.txtContent.setText(q.getContent());
-        
+
         ToggleGroup g = new ToggleGroup();
         vboxChoices.getChildren().clear();
-        for(var c: q .getChoices()){
+        for (var c : q.getChoices()) {
             RadioButton rdo = new RadioButton(c.getContent());
             rdo.setToggleGroup(g);
-            
+
             vboxChoices.getChildren().add(rdo);
         }
     }
-    
-    public void handleCheck(ActionEvent event){
+
+    public void handleCheck(ActionEvent event) {
         Question q = this.questions.get(this.currentQuestion);
-        for (int i = 0; i < q.getChoices().size(); i++){
-            RadioButton r = (RadioButton)this.vboxChoices.getChildren().get(i);
-            if(r.isSelected()){
+        for (int i = 0; i < q.getChoices().size(); i++) {
+            RadioButton r = (RadioButton) this.vboxChoices.getChildren().get(i);
+            if (r.isSelected()) {
                 this.txtResult.setText("CHÍNH XÁC!");
                 this.txtResult.setStyle("-fx-fill: blue");
-            }else{
+            } else {
                 this.txtResult.setText("CHÍNH XÁC!");
                 this.txtResult.setStyle("-fx-fill: blue");
             }
         }
     }
-    
-    public void handleNext(ActionEvent event){
-        if(this.currentQuestion < questions.size() - 1){
+
+    public void handleNext(ActionEvent event) {
+        if (this.currentQuestion < questions.size() - 1) {
             this.currentQuestion++;
             this.loadQuestion();
         }
